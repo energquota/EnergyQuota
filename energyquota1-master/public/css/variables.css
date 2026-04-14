@@ -1,0 +1,90 @@
+/**
+ * EnergyQuota Design Tokens
+ * UX: Consistent contrast, spacing scale, and motion across mobile/tablet/desktop.
+ * All animations respect prefers-reduced-motion in consuming stylesheets.
+ */
+:root {
+  /* Primary palette – TANESCO-inspired; sufficient contrast on white (WCAG AA) */
+  --color-primary: #007B40;
+  --color-primary-rgb: 0, 123, 64;
+  --color-primary-dark: #005f32;
+  --color-primary-light: #009952;
+
+  --color-secondary: #FFC72C;
+  --color-secondary-dark: #cc9f23;
+  --color-secondary-light: #ffd966;
+  --color-secondary-soft: rgba(255, 199, 44, 0.15);
+
+  /* Backgrounds – hierarchy: page < sidebar/header < cards */
+  --color-bg: #F5F6F8;
+  --color-bg-card: #FFFFFF;
+  --color-bg-sidebar: #E8F0F8;
+  --color-bg-header: #E8F0F8;
+
+  /* Text – dark for headings, body for copy, muted for secondary (readability) */
+  --color-text-dark: #1a1d21;
+  --color-text-body: #43494e;
+  --color-text-muted: #6b7280;
+
+  /* Semantic – feedback and states */
+  --color-success: var(--color-primary);
+  --color-warning: #d97706;
+  --color-error: #b91c1c;
+  --color-info: #0e7490;
+
+  /* Focus ring – high visibility for keyboard users */
+  --color-focus-ring: var(--color-secondary);
+  --focus-ring-offset: 2px;
+
+  /* Typography – scale works from 320px up; use clamp() in components */
+  --font-heading: 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --text-h1: 2.8rem;
+  --text-h2: 2.2rem;
+  --text-h3: 1.8rem;
+  --text-h4: 1.4rem;
+  --text-body: 1rem;
+  --text-small: 0.875rem;
+  --line-height-tight: 1.25;
+  --line-height-body: 1.5;
+  --line-height-relaxed: 1.65;
+
+  /* Spacing scale – 4px base; use for padding/margin/gap (responsive rhythm) */
+  --space-xxs: 2px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  /* Shadows – elevation hierarchy; hover uses stronger shadow for affordance */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
+
+  /* Radius – consistent roundness; larger for cards/modals */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Transitions – fast for hover/focus, normal for layout */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow: 0.35s ease;
+
+  /* Animation – one-off and continuous */
+  --anim-duration-fast: 0.25s;
+  --anim-duration-normal: 0.4s;
+  --anim-duration-slow: 0.6s;
+  --anim-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --anim-ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  /* Continuous (looping) – long duration, ease-in-out; disabled when prefers-reduced-motion */
+  --anim-float-duration: 8s;
+  --anim-pulse-duration: 4s;
+  --anim-gradient-duration: 20s;
+  --anim-float-ease: ease-in-out;
+}

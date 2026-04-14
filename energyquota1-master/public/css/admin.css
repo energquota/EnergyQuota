@@ -1,0 +1,279 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('variables.css');
+@import url('ux-base.css');
+
+/**
+ * App shell – sidebar, header, page content.
+ *
+ * UX improvements:
+ * - Sidebar: Active state with left border ("you are here"); hover/click feedback.
+ * - Touch targets and focus from ux-base; smooth open/close on mobile.
+ * - Page content: Light fade-in on load for perceived performance.
+ * - Breadcrumbs and tables: Hover states for clarity.
+ *
+ * Responsive: Sidebar collapses to overlay on mobile; content scales.
+ * Animation: CSS-only; respects prefers-reduced-motion.
+ */
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text-body);
+  background-color: var(--color-bg);
+  line-height: var(--line-height-body);
+}
+
+.bg-main {
+  background-color: var(--color-bg-sidebar);
+}
+
+.sidebar-custom {
+  background-color: var(--color-bg-sidebar);
+  color: var(--color-text-dark);
+}
+
+.rounded-full {
+  border-radius: 100%;
+}
+
+#wrapper {
+  overflow-x: hidden;
+}
+
+#sidebar-wrapper {
+  min-height: 100vh;
+  margin-left: -15rem;
+  -webkit-transition: margin var(--transition-normal);
+  -moz-transition: margin var(--transition-normal);
+  -o-transition: margin var(--transition-normal);
+  transition: margin var(--transition-normal);
+}
+
+#sidebar-wrapper .sidebar-heading {
+  padding: var(--space-lg) var(--space-md);
+  font-size: var(--text-h3);
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+  font-weight: 700;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+#sidebar-wrapper .list-group-custom {
+  width: 15rem;
+}
+
+#page-content-wrapper {
+  min-width: 100vw;
+}
+
+/* Page content entrance – light fade-in (UX: smooth transition on load) */
+.page-content-inner {
+  opacity: 0;
+  animation: pageContentFadeIn var(--anim-duration-normal) var(--anim-ease) forwards;
+}
+@keyframes pageContentFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-content-inner {
+    opacity: 1;
+    animation: none;
+  }
+}
+
+#wrapper.toggled #sidebar-wrapper {
+  margin-left: 0;
+}
+
+#menu-toggle {
+  cursor: pointer;
+}
+
+/* side bar */
+.sidebar-link {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  width: 90%;
+  margin: var(--space-sm) auto;
+  padding: var(--space-md);
+  color: var(--color-text-body);
+  transition: background-color var(--transition-normal), color var(--transition-normal), transform var(--transition-fast);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  min-height: 48px;
+}
+
+.sidebar-link svg {
+  margin-right: var(--space-sm);
+  fill: var(--color-text-body);
+  width: 20px;
+  height: 20px;
+}
+
+.sidebar-link:hover {
+  background: var(--color-secondary-soft);
+  color: var(--color-primary);
+}
+
+.sidebar-link:hover svg {
+  fill: var(--color-primary);
+}
+
+/* Active state: left border + fill for clear "you are here" cue */
+.sidebar-link.active {
+  background: var(--color-primary);
+  color: white;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--color-primary-dark);
+  padding-left: calc(var(--space-md) - 3px);
+}
+
+.sidebar-link.active svg {
+  fill: white;
+}
+
+.sidebar-link:active {
+  transform: scale(0.98);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-link:active {
+    transform: none;
+  }
+}
+
+.notification {
+  position: relative;
+  cursor: pointer;
+}
+
+.notification-badge {
+  position: absolute;
+  top: calc(var(--space-xs) * -1);
+  right: var(--space-md);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: white;
+  background-color: var(--color-error);
+  text-align: center;
+  font-size: var(--text-small);
+  font-weight: 700;
+  line-height: 20px;
+}
+
+.notification-div {
+  position: absolute;
+  right: var(--space-md);
+  top: calc(var(--space-md) + var(--space-xl));
+  width: 300px;
+  background-color: var(--color-bg-card);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 2;
+  transition: opacity var(--transition-normal), transform var(--transition-normal);
+}
+
+.notification-div p {
+  color: var(--color-text-body);
+  margin: 0;
+  font-size: var(--text-small);
+}
+
+.notification-div a {
+  text-decoration: none;
+  display: inline-block;
+  margin-right: var(--space-md);
+  color: var(--color-primary);
+  font-size: var(--text-small);
+}
+
+.notification-div hr {
+  margin: var(--space-sm) 0;
+  border: none;
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.hidden {
+  display: none;
+}
+
+/* breadcrumbs */
+.breadcrumb-item a {
+  text-decoration: none;
+  color: var(--color-text-muted);
+  transition: all var(--transition-fast);
+}
+
+.breadcrumb-item a:hover {
+  color: var(--color-primary);
+}
+
+.breadcrumb-item.active {
+  color: var(--color-text-dark);
+  font-weight: 500;
+}
+
+/* Table styling */
+.tenants-table thead th {
+  background: var(--color-primary);
+  color: white;
+  font-weight: 600;
+  border-color: var(--color-primary);
+}
+.tenants-table tbody tr:hover {
+  background: var(--color-secondary-soft);
+}
+
+/* Dropdown – open/close transition (Bootstrap handles visibility; we add motion cue) */
+.dropdown-menu {
+  transition: opacity var(--transition-fast);
+}
+
+/* Responsive: sidebar becomes overlay on small screens; smooth transition */
+@media (max-width: 767px) {
+  #sidebar-wrapper {
+    position: fixed;
+    z-index: 1000;
+    margin-left: -15rem;
+    box-shadow: var(--shadow-lg);
+    transition: margin var(--transition-normal);
+  }
+  #wrapper.toggled #sidebar-wrapper {
+    margin-left: 0;
+  }
+  #wrapper.toggled::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+  }
+  .notification-div {
+    width: 90%;
+  }
+}
+
+@media (min-width: 768px) {
+  #sidebar-wrapper {
+    margin-left: 0;
+  }
+
+  #page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+
+  #wrapper.toggled #sidebar-wrapper {
+    margin-left: -15rem;
+  }
+}

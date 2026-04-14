@@ -1,0 +1,39 @@
+version: "3.8"
+services:
+  mongo-db:
+    image: mongo:5.0.2
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=EmmanuelTweve09
+      - MONGO_INITDB_ROOT_PASSWORD=Elementrix2030
+    volumes:
+      - energyquota:/data/db
+    restart: unless-stopped
+    networks:
+      - energy-network
+
+  nodejs-app:
+    depends_on:
+      - mongo-db
+    build: .
+    ports:
+      - 5000:5000
+    environment:
+      - MONGO_DB_URI=mongodb://EmmanuelTweve09:Elementrix2030@mongo-db:27017/energyQuotaDB?authSource=admin
+      - SESSION_SECRETE="Elementrix2030"
+      - EMAIL_HOST=smtp.gmail.com
+      - EMAIL_USER=info.energyquota@gmail.com
+      - EMAIL_PASSWORD=leko nrsp sttb zoxm
+      - FRONTEND_URL=http://localhost:5000
+    restart: unless-stopped
+    networks:
+      - energy-network
+
+volumes:
+  energyquota:
+    driver: local
+
+networks:
+  energy-network:
+    driver: bridge

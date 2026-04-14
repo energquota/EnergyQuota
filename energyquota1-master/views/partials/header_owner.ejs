@@ -1,0 +1,26 @@
+<nav
+  style="background-color: var(--color-bg-header);"
+  class="navbar navbar-expand-lg navbar-light py-3 px-4 header-nav"
+>
+  <div class="d-flex justify-content-between w-100 align-items-center">
+    <div class="d-flex align-items-center">
+      <i class="fas fa-align-left fs-4 me-3" id="menu-toggle" aria-label="Toggle sidebar" role="button"></i>
+      <span class="d-none d-md-inline text-dark fw-medium" style="font-family: var(--font-heading);">
+        EnergyQuota
+      </span>
+    </div>
+    <div class="dropdown">
+      <button class="btn btn-link text-dark text-decoration-none d-flex align-items-center p-0" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <img width="40" height="40" class="rounded-circle me-2" style="object-fit: cover; border: 2px solid var(--color-primary);" src="/images/user.jpg" alt="Profile" />
+        <span class="d-none d-sm-inline fw-medium" style="font-family: var(--font-body); color: var(--color-text-dark);"><%= typeof user !== 'undefined' ? user.full_name : 'Owner' %></span>
+        <i class="fas fa-chevron-down ms-1 small" style="color: var(--color-text-dark);"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+        <li><a class="dropdown-item" href="/dashboard"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+        <li><a class="dropdown-item" href="/owner_profile"><i class="fas fa-user me-2"></i>Profile</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-danger" href="/owners/logout"><i class="fas fa-power-off me-2"></i>Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>

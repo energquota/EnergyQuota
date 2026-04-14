@@ -1,0 +1,831 @@
+/**
+ * Landing page – mobile-first, fully responsive, with one-off and continuous animations.
+ *
+ * UX: Clear hierarchy (hero → features → mission → CTA). Primary CTA obvious.
+ *
+ * One-off: Hero entrance, scroll reveals, hover/focus/active on controls.
+ *
+ * CONTINUOUS ANIMATIONS (all looping; disabled when prefers-reduced-motion: reduce):
+ * - body::before       – Background gradient drift (bgDrift, 20s).
+ * - .hero-section      – Floating shapes (::before, ::after) + hero content float (heroFloat, 8s).
+ * - .content-card      – Shadow pulse (cardPulse, ~6s).
+ * - .landing-features .fas – Icon scale/rotate (iconFloat, 8s, staggered delay).
+ * - .cta-cards-section::before – Section background gradient motion (sectionBgFloat, 20s).
+ * - .cta-card          – Shadow pulse (cardPulse).
+ * - .cta-card-icon     – Scale pulse (ctaIconPulse, 8s).
+ * - .btn-primary-custom – Scale pulse (btnPulse, 4s); hover/focus/active override.
+ * - .footer-link       – Opacity pulse (linkPulse, 4s); hover overrides.
+ * Scroll-linked: Hero parallax (JS sets --hero-parallax). All use transform/opacity/shadow only for performance.
+ */
+
+@import url('variables.css');
+@import url('ux-base.css');
+
+/* Skip link – visible on focus for keyboard/screen reader users */
+.skip-link {
+  position: absolute;
+  top: -3rem;
+  left: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-primary);
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  z-index: 1000;
+  transition: top var(--transition-fast);
+}
+.skip-link:focus {
+  top: var(--space-md);
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
+  color: white;
+}
+
+/* -------------------------------------------------------------------------
+   Base & layout – mobile-first; smooth scaling (320px → tablet → desktop)
+   ------------------------------------------------------------------------- */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text-body);
+  background-color: var(--color-bg);
+  margin: 0;
+  opacity: 0;
+  animation: landingBodyFadeIn var(--anim-duration-slow) var(--anim-ease) forwards;
+  position: relative;
+}
+
+/* Continuous: subtle moving background gradient (fixed layer, transform-only for performance) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  z-index: -1;
+  background: radial-gradient(
+    ellipse 80% 80% at 20% 20%,
+    rgba(var(--color-primary-rgb), 0.04) 0%,
+    transparent 50%
+  ),
+  radial-gradient(
+    ellipse 60% 60% at 80% 80%,
+    var(--color-secondary-soft) 0%,
+    transparent 50%
+  );
+  animation: bgDrift var(--anim-gradient-duration) var(--anim-float-ease) infinite;
+  pointer-events: none;
+}
+
+@keyframes bgDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(2%, -1%) scale(1.02); }
+  66% { transform: translate(-1%, 2%) scale(0.98); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    opacity: 1;
+    animation: none;
+  }
+  body::before {
+    animation: none;
+  }
+}
+
+@keyframes landingBodyFadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--color-text-dark);
+  margin-top: 0;
+}
+
+/* -------------------------------------------------------------------------
+   Navbar – sticky, responsive; shadow on scroll (affordance: page has scrolled)
+   ------------------------------------------------------------------------- */
+.navbar-landing {
+  background-color: var(--color-bg-card);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-sm) var(--space-md);
+  transition: box-shadow var(--transition-normal), background-color var(--transition-normal);
+}
+
+.navbar-collapse {
+  transition: height var(--transition-normal) var(--anim-ease);
+}
+
+.navbar-landing.scrolled {
+  box-shadow: var(--shadow-md);
+}
+
+.navbar-brand-landing {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--color-primary);
+  font-size: clamp(1.25rem, 4vw, var(--text-h3));
+  transition: color var(--transition-fast);
+}
+
+.navbar-brand-landing:hover {
+  color: var(--color-primary-dark);
+}
+
+.navbar-nav-landing .nav-link {
+  color: var(--color-text-dark);
+  font-weight: 500;
+  margin-left: 0;
+  padding: var(--space-sm) var(--space-md);
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+@media (min-width: 992px) {
+  .navbar-nav-landing .nav-link {
+    margin-left: var(--space-md);
+  }
+}
+
+.navbar-nav-landing .nav-link:hover {
+  color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.navbar-nav-landing .nav-link.active {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* -------------------------------------------------------------------------
+   Hero section – entrance animation on load (CSS-only)
+   ------------------------------------------------------------------------- */
+/* Hero: background position via --hero-parallax (JS); continuous floating shapes + content float */
+.hero-section {
+  position: relative;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-2xl) var(--space-md);
+  color: white;
+  --hero-parallax: 0;
+  /* Gradient only; optional image is set via inline style in landing.ejs from config */
+  background: linear-gradient(
+      rgba(var(--color-primary-rgb), 0.85),
+      rgba(var(--color-primary-rgb), 0.85)
+    );
+  overflow: hidden;
+}
+
+/* Continuous: slow-moving decorative shapes in hero (transform + opacity only) */
+.hero-section::before,
+.hero-section::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+
+.hero-section::before {
+  width: min(280px, 60vw);
+  height: min(280px, 60vw);
+  top: 10%;
+  left: 5%;
+  animation: shapeFloat1 var(--anim-float-duration) var(--anim-float-ease) infinite;
+}
+
+.hero-section::after {
+  width: min(180px, 40vw);
+  height: min(180px, 40vw);
+  bottom: 15%;
+  right: 10%;
+  animation: shapeFloat2 calc(var(--anim-float-duration) * 1.2) var(--anim-float-ease) infinite;
+}
+
+@keyframes shapeFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+  50% { transform: translate(15px, -20px) scale(1.05); opacity: 0.8; }
+}
+
+@keyframes shapeFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+  50% { transform: translate(-20px, 15px) scale(1.08); opacity: 0.7; }
+}
+
+.hero-content {
+  z-index: 1;
+  max-width: 42rem;
+  /* Continuous: slow vertical float so hero feels alive */
+  animation: heroFloat var(--anim-float-duration) var(--anim-float-ease) infinite;
+}
+
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Hero title: word-by-word animation – loops endlessly (entrance → hold → exit → repeat) */
+.hero-title {
+  font-size: clamp(1.75rem, 5vw, var(--text-h1));
+  font-weight: 700;
+  margin-bottom: var(--space-md);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.hero-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(14px);
+  animation: heroWordLoop 6s var(--anim-ease) infinite;
+  animation-delay: calc(var(--hero-word-i, 0) * 0.07s);
+}
+
+.hero-word-sub {
+  animation-delay: calc(0.5s + var(--hero-word-i, 0) * 0.05s);
+}
+
+@keyframes heroWordLoop {
+  0% { opacity: 0; transform: translateY(14px); }
+  12% { opacity: 1; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(0); }
+  62% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 0; transform: translateY(14px); }
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2.5vw, var(--text-h4));
+  max-width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: var(--space-2xl);
+  line-height: var(--line-height-body);
+}
+
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: heroEntrance var(--anim-duration-slow) var(--anim-ease) 0.8s forwards;
+}
+
+.hero-buttons .btn {
+  margin: 0;
+  min-width: 10rem;
+}
+
+@keyframes heroEntrance {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-word,
+  .hero-word-sub {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .hero-buttons {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .hero-section::before,
+  .hero-section::after {
+    animation: none;
+  }
+  .hero-content {
+    animation: none;
+  }
+}
+
+/* Tablet and up: taller hero, more padding */
+@media (min-width: 768px) {
+  .hero-section {
+    min-height: 65vh;
+    padding: var(--space-3xl) var(--space-lg);
+  }
+}
+
+@media (min-width: 992px) {
+  .hero-section {
+    min-height: 60vh;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Section headings & content cards
+   ------------------------------------------------------------------------- */
+.section-heading {
+  font-size: clamp(1.5rem, 4vw, var(--text-h2));
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: var(--space-sm);
+  text-align: center;
+}
+
+/* UX: Short intro under heading so first-time users know what the section is for */
+.section-intro {
+  font-size: var(--text-body);
+  color: var(--color-text-body);
+  line-height: var(--line-height-body);
+  max-width: 36rem;
+  margin-bottom: var(--space-xl);
+}
+
+.content-card {
+  position: relative;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  /* Continuous: subtle glow pulse (opacity on overlay for performance) */
+  animation: cardPulse calc(var(--anim-float-duration) * 0.75) var(--anim-float-ease) infinite;
+}
+
+@keyframes cardPulse {
+  0%, 100% { box-shadow: var(--shadow-md); }
+  50% { box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1); }
+}
+
+.content-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+
+.content-card:active {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content-card {
+    animation: none;
+  }
+  .content-card:hover,
+  .content-card:active {
+    transform: none;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Key Features & Mission – grid and spacing
+   ------------------------------------------------------------------------- */
+.landing-features {
+  padding-top: var(--space-2xl);
+  padding-bottom: var(--space-2xl);
+}
+
+.landing-features .content-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Continuous: icon subtle scale/rotate loop; hover overrides */
+.landing-features .content-card .fas {
+  color: var(--color-primary);
+  margin-bottom: var(--space-md);
+  transition: transform var(--transition-normal), color var(--transition-normal);
+  animation: iconFloat var(--anim-float-duration) var(--anim-float-ease) infinite;
+}
+
+.landing-features .row > div:nth-child(1) .fas { animation-delay: 0s; }
+.landing-features .row > div:nth-child(2) .fas { animation-delay: 1.5s; }
+.landing-features .row > div:nth-child(3) .fas { animation-delay: 3s; }
+
+@keyframes iconFloat {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.04) rotate(2deg); }
+}
+
+.landing-features .content-card:hover .fas {
+  transform: scale(1.08);
+  color: var(--color-primary-dark);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-features .content-card .fas {
+    animation: none;
+  }
+  .landing-features .content-card:hover .fas {
+    transform: none;
+  }
+}
+
+.landing-features .content-card h3 {
+  font-size: clamp(1.125rem, 2.5vw, var(--text-h3));
+  margin-bottom: var(--space-sm);
+}
+
+.landing-features .content-card p {
+  margin-bottom: 0;
+  line-height: var(--line-height-body);
+  font-size: var(--text-body);
+  color: var(--color-text-body);
+}
+
+.landing-mission .content-card {
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.landing-mission .lead {
+  margin-bottom: 0;
+  line-height: 1.65;
+  font-size: clamp(1rem, 2vw, 1.125rem);
+}
+
+/* -------------------------------------------------------------------------
+   CTA cards section – continuous background motion + card pulse
+   ------------------------------------------------------------------------- */
+.cta-cards-section {
+  position: relative;
+  padding: var(--space-2xl) 0;
+  background-color: var(--color-bg-sidebar);
+  overflow: hidden;
+}
+
+/* Continuous: slow-moving gradient layer so section feels alive as user scrolls */
+.cta-cards-section::before {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  z-index: 0;
+  background: radial-gradient(
+    circle at 30% 70%,
+    rgba(255, 199, 44, 0.08) 0%,
+    transparent 45%
+  );
+  animation: sectionBgFloat var(--anim-gradient-duration) var(--anim-float-ease) infinite;
+  pointer-events: none;
+}
+
+.cta-cards-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes sectionBgFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(4%, -3%) scale(1.05); }
+}
+
+.cta-card {
+  position: relative;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  color: inherit;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 260px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  height: 100%;
+  /* Continuous: subtle shadow pulse */
+  animation: cardPulse calc(var(--anim-float-duration) * 0.75) var(--anim-float-ease) infinite;
+}
+
+.cta-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  color: inherit;
+}
+
+.cta-card:active {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-cards-section::before {
+    animation: none;
+  }
+  .cta-card {
+    animation: none;
+  }
+  .cta-card:hover,
+  .cta-card:active {
+    transform: none;
+  }
+}
+
+/* CTA card icon – continuous subtle scale; hover overrides */
+.cta-card-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto var(--space-lg);
+  background: var(--color-secondary-soft);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-normal), background-color var(--transition-normal);
+  animation: ctaIconPulse var(--anim-float-duration) var(--anim-float-ease) infinite;
+}
+
+@keyframes ctaIconPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.cta-card:hover .cta-card-icon {
+  transform: scale(1.05);
+  background: rgba(255, 199, 44, 0.25);
+}
+
+.cta-card-icon svg {
+  fill: var(--color-secondary);
+  width: 28px;
+  height: 28px;
+  transition: transform var(--transition-normal);
+}
+
+.cta-card:hover .cta-card-icon svg {
+  transform: scale(1.05);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-card-icon {
+    animation: none;
+  }
+  .cta-card:hover .cta-card-icon,
+  .cta-card:hover .cta-card-icon svg {
+    transform: none;
+  }
+}
+
+.cta-card h3 {
+  font-size: clamp(1.125rem, 2.5vw, var(--text-h3));
+  color: var(--color-text-dark);
+  margin-bottom: var(--space-md);
+}
+
+.cta-card p {
+  font-size: var(--text-body);
+  color: var(--color-text-body);
+  margin-bottom: var(--space-lg);
+  flex-grow: 1;
+  line-height: 1.5;
+}
+
+.cta-card .btn-group {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+/* -------------------------------------------------------------------------
+   Buttons – hover and focus for accessibility
+   ------------------------------------------------------------------------- */
+.btn-primary-custom,
+.btn-outline-custom {
+  display: inline-block;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  text-decoration: none;
+  text-align: center;
+  transition: background-color var(--transition-fast), color var(--transition-fast),
+    border-color var(--transition-fast), transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.btn-primary-custom {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+  /* Continuous: subtle scale pulse; hover/active override */
+  animation: btnPulse var(--anim-pulse-duration) var(--anim-float-ease) infinite;
+}
+
+@keyframes btnPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+/* Primary CTA – hover/focus override continuous pulse */
+.btn-primary-custom:hover,
+.btn-primary-custom:focus-visible {
+  background-color: var(--color-primary-dark);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  animation: none;
+}
+
+.btn-primary-custom.btn-lg {
+  padding: var(--space-md) var(--space-xl);
+  min-height: 48px;
+  font-size: clamp(1rem, 2vw, 1.125rem);
+}
+
+.btn-outline-custom {
+  background-color: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.btn-outline-custom:hover,
+.btn-outline-custom:focus-visible {
+  background-color: var(--color-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary-custom:active,
+.btn-outline-custom:active {
+  transform: translateY(0) scale(0.98);
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary-custom {
+    animation: none;
+  }
+  .btn-primary-custom:hover,
+  .btn-primary-custom:focus-visible,
+  .btn-outline-custom:hover,
+  .btn-outline-custom:focus-visible,
+  .btn-primary-custom:active,
+  .btn-outline-custom:active {
+    transform: none;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Footer – stacked on mobile, grid on desktop; clear link grouping
+   ------------------------------------------------------------------------- */
+.footer-landing {
+  background-color: var(--color-primary);
+  color: white;
+  padding: var(--space-2xl) var(--space-md);
+}
+
+.footer-landing p {
+  line-height: var(--line-height-body);
+  margin-bottom: var(--space-sm);
+}
+
+.footer-landing .row > [class*="col-"] {
+  margin-bottom: var(--space-xl);
+}
+
+.footer-heading {
+  font-size: var(--text-h4);
+  font-weight: 600;
+  margin-bottom: var(--space-md);
+}
+
+.footer-link {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: var(--space-xs);
+  transition: color var(--transition-fast);
+  animation: linkPulse var(--anim-pulse-duration) var(--anim-float-ease) infinite;
+}
+
+@keyframes linkPulse {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; }
+}
+
+.footer-link:hover {
+  color: white;
+  animation: none;
+}
+
+.social-icons a {
+  color: white;
+  font-size: 1.25rem;
+  margin-right: var(--space-md);
+  transition: transform var(--transition-fast);
+}
+
+.social-icons a:hover {
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .social-icons a:hover {
+    transform: none;
+  }
+}
+
+.copyright {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: var(--space-lg);
+  margin-top: var(--space-xl);
+  font-size: var(--text-small);
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-link {
+    animation: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .footer-landing {
+    padding: var(--space-3xl) var(--space-lg);
+  }
+  .footer-landing .row > [class*="col-"]:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Scroll-triggered section reveal (JS adds .is-visible)
+   Variants: default slide-up, .reveal-fade (opacity), .reveal-zoom (scale)
+   ------------------------------------------------------------------------- */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity var(--anim-duration-slow) var(--anim-ease),
+    transform var(--anim-duration-slow) var(--anim-ease);
+}
+
+.fade-in-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-in-section.reveal-fade {
+  transform: none;
+}
+.fade-in-section.reveal-fade.is-visible {
+  transform: none;
+}
+
+.fade-in-section.reveal-zoom {
+  transform: translateY(16px) scale(0.98);
+}
+.fade-in-section.reveal-zoom.is-visible {
+  transform: translateY(0) scale(1);
+}
+
+/* Optional stagger for children inside a revealed section */
+.fade-in-section.is-visible .fade-in-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-in-item {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity var(--anim-duration-normal) var(--anim-ease),
+    transform var(--anim-duration-normal) var(--anim-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-section,
+  .fade-in-section.reveal-fade,
+  .fade-in-section.reveal-zoom {
+    opacity: 1;
+    transform: none;
+  }
+  .fade-in-section.is-visible .fade-in-item,
+  .fade-in-item {
+    opacity: 1;
+    transform: none;
+  }
+}

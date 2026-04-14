@@ -1,0 +1,30 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EnergyQuota</title>
+    <style>
+      .container{ background-color: #DCF2F1; border-radius: 8px; padding: 1rem
+      3rem; width: 80%; margin: 0 auto; } h4{ text-align: center; color:
+      #0F1035; padding: 0.5rem; } a{ text-decoration: none; color: steelblue; }
+      .link{ text-align: center; } .email{ text-decoration: none; font-weight:
+      bold; } .password{ font-weight: bold; color: black; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h4>Hey there, {{name}}! &#128522; </h4>
+      <p>Your House owner,
+        {{landlord}}, has set up your account. Here are your login details:</p>
+      <p>Email &#128231; : <span class="email">{{email}}</span></p>
+      <p>Password &#128274; : <span class="password">{{password}}</span></p>
+      <p>Remember to keep this information safe. Click the link below to access
+        your account:</p>
+      <div class="link">
+        <a href="{{loginUrl}}" clicktracking="off">{{loginUrl}}</a>
+      </div>
+      <p>Warm regards,</p>
+      <p>EnergyQuota team</p>
+    </div>
+  </body>
+</html>

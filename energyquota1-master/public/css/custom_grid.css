@@ -1,0 +1,88 @@
+@import url('variables.css');
+
+.container-div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-lg);
+  align-items: stretch;
+  width: 100%;
+}
+
+.grid-container-3 {
+  flex: 0 0 300px;
+  min-width: 260px;
+}
+
+.dashboard-card {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+
+.dashboard-card:active {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-card:hover,
+  .dashboard-card:active {
+    transform: none;
+  }
+}
+
+.dashboard-card-primary {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  color: white;
+}
+
+.dashboard-card-primary h4, .dashboard-card-primary h5, .dashboard-card-primary h1, .dashboard-card-primary p, .dashboard-card-primary span {
+  color: white;
+}
+
+.dashboard-card-primary svg {
+  fill: white;
+}
+
+.page-welcome .welcome-emoji { font-size: 1.8rem; }
+.page-welcome p { margin-left: var(--space-sm) !important; }
+.page-divider {
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
+  border: none;
+  width: 95%;
+  margin: var(--space-lg) auto;
+  border-radius: 1px;
+}
+.text-primary-custom { color: var(--color-primary) !important; }
+.recharge-value { font-size: 2.8rem; font-weight: 700; font-family: var(--font-heading); }
+
+@keyframes livePulse {
+  0%, 100% { background: transparent; }
+  50% { background: var(--color-secondary-soft); }
+}
+.live-update {
+  animation: livePulse 0.6s ease;
+  border-radius: var(--radius-sm);
+}
+
+/* mobile */
+@media screen and (max-width: 767px) {
+  .container-div {
+    flex-direction: column;
+    align-items: center;
+  }
+  .grid-container-3 {
+    width: 100%;
+    max-width: 380px;
+  }
+}

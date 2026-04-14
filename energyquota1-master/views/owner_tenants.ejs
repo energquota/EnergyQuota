@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EnergyQuota – Manage Tenants</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/variables.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+    <link rel="stylesheet" href="/css/modal.css" />
+  </head>
+  <body>
+    <div class="d-flex" id="wrapper">
+      <%- include("partials/sidebar_owner") %>
+      <!-- Page Content -->
+      <div id="page-content-wrapper">
+        <%- include("partials/header_owner") %>
+        <!-- page contents -->
+        <div class="container-fluid p-4 page-content-inner">
+          <nav
+            style="--bs-breadcrumb-divider: '>'"
+            class="pt-3"
+            aria-label="breadcrumb"
+          >
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item active" aria-current="page">
+                Tenants
+              </li>
+            </ol>
+          </nav>
+          <h2 class="page-title mb-4" style="font-family: var(--font-heading);">Manage your tenants</h2>
+          <a href="/tenants/register" class="btn btn-primary-auth mb-3">
+            <i class="fas fa-plus me-1"></i>Add tenant
+          </a>
+          <div class="table-responsive">
+            <% if (tenants.length === 0) { %>
+            <div class="empty-state text-center p-5 rounded" style="background: var(--color-bg); border: 2px dashed var(--color-text-muted); color: var(--color-text-muted);">
+              <i class="fas fa-users fa-3x mb-3" style="color: var(--color-text-muted);"></i>
+              <p class="mb-3" style="font-family: var(--font-body); font-size: var(--text-h4);">No tenants registered yet</p>
+              <a href="/tenants/register" class="btn btn-primary-auth">Add your first tenant</a>
+            </div>
+            <% } else { %>
+            <table
+              class="table table-hover align-middle tenants-table"
+            >
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone number</th>
+                  <th>House number</th>
+                  <th class="text-center">Edit</th>
+                  <th class="text-center">Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% tenants.forEach(tenant => { %>
+                <tr>
+                  <td><%= tenant.name %></td>
+                  <td><%= tenant.email %></td>
+                  <td><%= tenant.phone_number %></td>
+                  <td><%= tenant.house_number %></td>
+                  <td class="text-center">
+                    <a
+                      href="/tenants/edit/<%= tenant._id %>"
+                      class="btn btn-sm btn-outline-primary"
+                      title="Edit tenant"
+                      style="color: var(--color-primary); border-color: var(--color-primary);"
+                    ><i class="fas fa-edit"></i></a>
+                  </td>
+                  <td class="text-center">
+                    <button
+                      class="deleteBtn btn btn-sm btn-outline-danger"
+                      data-user-id="<%= tenant._id %>"
+                      title="Delete tenant"
+                      style="color: var(--color-error); border-color: var(--color-error);"
+                    >
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+                <% }) %>
+              </tbody>
+            </table>
+            <div class="text-end mt-3">
+              <a class="btn btn-primary-auth" href="/tenants/download_tenants">
+                <i class="fas fa-download me-1"></i>Download PDF
+              </a>
+            </div>
+            <%}%>
+          </div>
+          <!-- Delete confirmation modal (single instance) -->
+          <div id="myModal" class="modal">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Delete Tenant</h4>
+              </div>
+              <div class="modal-body">
+                <p class="mb-0">Are you sure you want to delete this tenant? This action cannot be undone.</p>
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-outline-secondary" id="cancelBtn" style="color: var(--color-text-muted); border-color: var(--color-text-muted);">Cancel</button>
+                <button class="btn btn-danger" id="confirmBtn" style="background: var(--color-error); border-color: var(--color-error);">Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/js/modal_delete.js"></script>
+    <script src="/js/index.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

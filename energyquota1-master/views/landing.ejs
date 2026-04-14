@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EnergyQuota – Smart Metering</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/css/landing.css">
+  <style>
+    /* Hero background: gradient only (no external image); parallax var for scroll effect */
+    .hero-section {
+      --hero-parallax: 0;
+      background: linear-gradient(rgba(var(--color-primary-rgb), 0.85), rgba(var(--color-primary-rgb), 0.85))<%= config.hero.backgroundImage ? ', url("' + config.hero.backgroundImage + '") no-repeat center calc(50% + var(--hero-parallax) * 0.08px) / cover' : '' %>;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Skip link for accessibility -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light navbar-landing sticky-top" aria-label="Main navigation">
+    <div class="container">
+      <a class="navbar-brand navbar-brand-landing" href="/">EnergyQuota</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto navbar-nav-landing">
+          <% config.navbarLinks.forEach(link => { %>
+            <li class="nav-item">
+              <a class="nav-link <%= link.isActive ? 'active' : '' %>" <%= link.isActive ? 'aria-current="page"' : '' %> href="<%= link.link %>"><%= link.text %></a>
+            </li>
+          <% }); %>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section – word-by-word animation on title and subtitle -->
+  <header class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title" id="heroTitle" aria-label="<%= config.hero.title %>">
+        <% const titleWords = config.hero.title.split(' '); titleWords.forEach((word, i) => { %>
+        <span class="hero-word" style="--hero-word-i: <%= i %>"><%= word %></span><%= i < titleWords.length - 1 ? ' ' : '' %>
+        <% }); %>
+      </h1>
+      <p class="hero-subtitle" id="heroSubtitle" aria-label="<%= config.hero.subtitle %>">
+        <% const subWords = config.hero.subtitle.split(' '); subWords.forEach((word, i) => { %>
+        <span class="hero-word hero-word-sub" style="--hero-word-i: <%= i %>"><%= word %></span><%= i < subWords.length - 1 ? ' ' : '' %>
+        <% }); %>
+      </p>
+      <div class="hero-buttons">
+        <a href="<%= config.hero.button1Link %>" class="btn btn-primary-custom btn-lg"><%= config.hero.button1Text %></a>
+        <a href="<%= config.hero.button2Link %>" class="btn btn-outline-custom btn-lg"><%= config.hero.button2Text %></a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- Key Features – scroll reveal; intro line for first-time users -->
+    <section class="container py-4 py-md-5 fade-in-section landing-features" aria-labelledby="features-heading">
+      <h2 id="features-heading" class="section-heading">Key Features</h2>
+      <p class="section-intro text-center mx-auto">Everything you need to manage energy in one place.</p>
+      <div class="row g-4 mb-5">
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="content-card text-center h-100 fade-in-item">
+            <i class="fas fa-chart-line fa-3x mb-3" style="color: var(--color-primary);" aria-hidden="true"></i>
+            <h3>Real-time Monitoring</h3>
+            <p>Track energy consumption and remaining units live from your dashboard.</p>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="content-card text-center h-100 fade-in-item">
+            <i class="fas fa-bolt fa-3x mb-3" style="color: var(--color-primary);" aria-hidden="true"></i>
+            <h3>Easy Recharge</h3>
+            <p>Quickly buy and assign energy units to your tenants, or for tenants to top up themselves.</p>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="content-card text-center h-100 fade-in-item">
+            <i class="fas fa-home fa-3x mb-3" style="color: var(--color-primary);" aria-hidden="true"></i>
+            <h3>Tenant Management</h3>
+            <p>Landlords can effortlessly manage tenant details, meter assignments, and historical data.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Our Mission -->
+      <h2 id="mission-heading" class="section-heading">Our Mission</h2>
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="content-card p-4 text-center landing-mission fade-in-item">
+            <p class="lead">
+              At EnergyQuota, we are committed to revolutionizing energy management for residential properties.
+              Our platform provides transparency, efficiency, and convenience, ensuring a fair and clear system for both landlords and tenants.
+              We strive to empower users with the data they need to make informed decisions about their energy usage.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Cards – scroll reveal with zoom variant for variety -->
+    <section class="cta-cards-section fade-in-section reveal-zoom" aria-labelledby="cta-heading">
+      <div class="container py-4 py-md-5">
+        <h2 id="cta-heading" class="section-heading text-center">Join EnergyQuota Today</h2>
+        <div class="row g-4 justify-content-center">
+          <% config.ctaCards.forEach(card => { %>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="cta-card">
+                <div>
+                  <div class="cta-card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" aria-hidden="true">
+                      <%- card.iconPath %>
+                    </svg>
+                  </div>
+                  <h3><%= card.title %></h3>
+                  <p><%= card.description %></p>
+                </div>
+                <div class="btn-group">
+                  <a href="<%= card.button1Link %>" class="btn btn-primary-custom"><%= card.button1Text %></a>
+                  <% if (card.button2Text && card.button2Link) { %>
+                    <a href="<%= card.button2Link %>" class="btn btn-outline-custom"><%= card.button2Text %></a>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-landing" role="contentinfo">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 col-md-6 col-lg-3">
+          <h4 class="footer-heading">EnergyQuota</h4>
+          <p><%= config.footer.aboutText %></p>
+          <div class="social-icons mt-3">
+            <% config.footer.socialLinks.forEach(social => { %>
+              <a href="<%= social.link %>" aria-label="<%= social.iconClass.replace('fab fa-', '') %>"><i class="<%= social.iconClass %>"></i></a>
+            <% }); %>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <h4 class="footer-heading">Quick Links</h4>
+          <ul class="list-unstyled">
+            <% config.footer.quickLinks.forEach(link => { %>
+              <li><a class="footer-link" href="<%= link.link %>"><%= link.text %></a></li>
+            <% }); %>
+          </ul>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <h4 class="footer-heading">Support</h4>
+          <ul class="list-unstyled">
+            <% config.footer.supportLinks.forEach(link => { %>
+              <li><a class="footer-link" href="<%= link.link %>"><%= link.text %></a></li>
+            <% }); %>
+          </ul>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <h4 class="footer-heading">Contact Us</h4>
+          <p>
+            <%= config.footer.contactInfo.address1 %><br>
+            <%= config.footer.contactInfo.address2 %><br>
+            <%= config.footer.contactInfo.email %><br>
+            <%= config.footer.contactInfo.phone %>
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 text-center copyright">
+          <%= config.footer.copyrightText %>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <script>
+    (function () {
+      'use strict';
+      var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Section reveal on scroll (minimal JS, CSS handles animation)
+      var faders = document.querySelectorAll('.fade-in-section');
+      var observerOptions = { threshold: 0.15, rootMargin: '0px 0px -40px 0px' };
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+      faders.forEach(function (el) { observer.observe(el); });
+
+      // Stagger .fade-in-item children when section becomes visible (CSS handles animation)
+      if (!prefersReducedMotion) {
+        var staggerObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            var items = entry.target.querySelectorAll('.fade-in-item');
+            items.forEach(function (item, i) {
+              item.style.transitionDelay = (i * 0.08) + 's';
+            });
+            staggerObserver.unobserve(entry.target);
+          });
+        }, observerOptions);
+        faders.forEach(function (el) { staggerObserver.observe(el); });
+      }
+
+      // Navbar scroll state (shadow)
+      var navbar = document.querySelector('.navbar-landing');
+      var heroSection = document.querySelector('.hero-section');
+      function onScroll() {
+        var y = window.scrollY || 0;
+        if (navbar) navbar.classList.toggle('scrolled', y > 50);
+        // Subtle hero parallax: move background slightly with scroll (performance-friendly)
+        if (heroSection && !prefersReducedMotion) {
+          heroSection.style.setProperty('--hero-parallax', y);
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+  </script>
+</body>
+</html>

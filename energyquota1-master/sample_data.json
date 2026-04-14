@@ -1,0 +1,17 @@
+{
+    "meter_number": "12345678912",
+    "tenants": [
+        {
+            "tenant_id": "1234567891201",
+            "units_used": "50.23"
+        },
+        {
+            "tenant_id": "1234567891202",
+            "units_used": "50.23"
+        },
+        {
+            "tenant_id": "1234567891203",
+            "units_used": "10.05"
+        }
+    ]
+}

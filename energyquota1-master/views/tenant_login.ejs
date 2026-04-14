@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EnergyQuota – Tenant Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+  <div class="container py-5">
+    <a href="/" class="auth-back-home" aria-label="Back to home"><span aria-hidden="true">←</span> Back to home</a>
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-6">
+        <div class="auth-card <%= (message && (Array.isArray(message) ? message.length > 0 : message)) ? 'form-shake' : '' %>">
+          <div class="auth-header">
+            <h3>EnergyQuota</h3>
+            <h4>Tenant Login</h4>
+            <p class="auth-header-context">Log in to view your units and recharge</p>
+          </div>
+          <form action="/tenants_account/login" method="post" class="form-group-spaced">
+            <% if(message && (Array.isArray(message) ? message.length > 0 : message)){ %>
+              <div class="alert alert-danger alert-dismissible fade show ux-notify-in" role="alert">
+                <%= Array.isArray(message) ? message[0] : message %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            <% } %>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" name="email" class="form-control" id="email" placeholder="Enter your email" autocomplete="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <div class="input-with-icon">
+                <input type="password" name="password" class="form-control" id="password" placeholder="Enter your password" autocomplete="current-password" required>
+                <img id="eye-icon" src="/images/eye-close.png" alt="Toggle password visibility" role="button" tabindex="0">
+              </div>
+            </div>
+            <button class="btn btn-primary-auth w-100 mb-3" type="submit">Login</button>
+            <div class="text-end small">
+              <a href="/owners/login" class="auth-link">House Owner? Login here</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    var eyeIcon = document.getElementById("eye-icon");
+    var passwordInput = document.getElementById("password");
+    eyeIcon.onclick = function() {
+      if(passwordInput.type === "password") {
+        passwordInput.type = "text";
+        eyeIcon.src = "/images/eye-open.png";
+      } else {
+        passwordInput.type = "password";
+        eyeIcon.src = "/images/eye-close.png";
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>

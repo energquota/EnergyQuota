@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error – EnergyQuota</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/css/auth.css">
+  <style>
+    body { background-color: var(--color-bg); font-family: var(--font-body); color: var(--color-text-body); }
+    h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); color: var(--color-text-dark); }
+    .error-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background-color: var(--color-bg); }
+    .error-code { 
+      font-size: var(--text-h1);
+      font-weight: 700;
+      color: var(--color-primary);
+      margin-bottom: var(--space-md);
+    }
+    .error-message { 
+      font-size: var(--text-h3);
+      color: var(--color-text-dark);
+      margin-bottom: var(--space-lg);
+    }
+    .error-stack { 
+      background: #f1f1f1;
+      padding: var(--space-md);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-muted);
+      font-size: var(--text-small);
+      text-align: left;
+      margin-top: var(--space-lg);
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="error-page">
+    <div class="text-center p-5">
+      <div class="error-code"><%= error.status || 500 %></div>
+      <h2 class="error-message"><%= message %></h2>
+      <a href="/" class="btn btn-primary-auth">Back to Home</a>
+      <% if (error.stack) { %>
+        <pre class="error-stack mt-4"><%= error.stack %></pre>
+      <% } %>
+    </div>
+  </div>
+</body>
+</html>

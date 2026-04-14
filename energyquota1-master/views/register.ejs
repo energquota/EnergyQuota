@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EnergyQuota – Owner Registration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+  <div class="container py-5">
+    <a href="/" class="auth-back-home" aria-label="Back to home"><span aria-hidden="true">←</span> Back to home</a>
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+        <div class="auth-card <%= (message && (Array.isArray(message) ? message.length > 0 : message)) ? 'form-shake' : '' %>">
+          <div class="auth-header">
+            <h3>EnergyQuota</h3>
+            <h4>House Owner Registration</h4>
+            <p class="auth-header-context">Create an account to start managing your property</p>
+          </div>
+          <form action="/owners/register" method="post" class="form-group-spaced">
+            <% if(message && (Array.isArray(message) ? message.length > 0 : message)){ %>
+              <div class="alert alert-info alert-dismissible fade show ux-notify-in" role="alert">
+                <%= Array.isArray(message) ? message[0] : message %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            <% } %>
+            <div class="text-end mb-2">
+              <a href="/owners/login" class="auth-link">Already have an account? Login here</a>
+            </div>
+            <div class="mb-3">
+              <label for="full_name" class="form-label">Full name</label>
+              <input type="text" name="full_name" class="form-control" id="full_name" placeholder="Enter your full name" autocomplete="name" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" name="email" class="form-control" id="email" placeholder="Enter your email" autocomplete="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="phone_number" class="form-label">Phone number</label>
+              <input type="text" name="phone_number" class="form-control" id="phone_number" pattern="\+255\d{9}"
+                title="Enter a valid phone number starting with +255 and followed by 9 digits"
+                placeholder="+255XXXXXXXXX" required>
+            </div>
+            <div class="mb-3">
+              <label for="meter_number" class="form-label">Meter number</label>
+              <input type="text" name="meter_number" class="form-control" id="meter_number" pattern="^\d{11}$"
+                title="Meter number has 11 digits" placeholder="Enter your meter number" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <div class="input-with-icon">
+                <input type="password" name="password" class="form-control" id="password"
+                  placeholder="Min 8 chars, 1 digit, 1 uppercase, 1 lowercase"
+                  pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$" autocomplete="new-password" required>
+                <img id="toggle-btn" onclick="togglePassword()" src="/images/eye-close.png" alt="Toggle password" role="button">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="confirm_password" class="form-label">Confirm Password</label>
+              <div class="input-with-icon">
+                <input type="password" name="confirm_password" class="form-control" id="confirm_password" placeholder="Re-enter your password" autocomplete="new-password" required>
+                <img id="toggle-btn-confirm" onclick="togglePasswordConfirm()" src="/images/eye-close.png" alt="Toggle password" role="button">
+              </div>
+            </div>
+            <button class="btn btn-primary-auth w-100" type="submit">Register</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/js/toggle_password_view.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>

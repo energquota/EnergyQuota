@@ -1,0 +1,194 @@
+/**
+ * UX Base – site-wide accessibility, consistency, and feedback.
+ *
+ * UX rationale:
+ * - Touch targets (44px min): Reduces mis-taps on mobile; meets WCAG 2.5.5.
+ * - Focus ring: Keyboard users need visible focus; never remove.
+ * - Form feedback: Shake on error and highlight on success reduce cognitive load.
+ * - Click/active state: Affordance that the action was registered.
+ * - Readability: Line length and spacing improve comprehension.
+ *
+ * Load after variables.css. Used by landing.css, auth.css, admin.css.
+ * All motion respects prefers-reduced-motion in media queries below.
+ */
+
+/* -------------------------------------------------------------------------
+   Touch targets – min 44x44px (WCAG 2.5.5; reduces friction on mobile)
+   ------------------------------------------------------------------------- */
+button:not(.btn-close),
+.btn:not(.btn-close),
+a.btn,
+input[type="submit"],
+input[type="button"],
+input[type="checkbox"],
+input[type="radio"],
+select,
+.form-control,
+.input-with-icon,
+.sidebar-link,
+.dropdown-item,
+.nav-link,
+[role="button"] {
+  min-height: 44px;
+}
+
+.btn-close {
+  min-height: auto;
+  min-width: auto;
+}
+
+button,
+.btn,
+a.btn,
+.sidebar-link,
+.dropdown-item,
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-control,
+.input-with-icon {
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--text-body);
+  line-height: var(--line-height-body);
+}
+
+/* -------------------------------------------------------------------------
+   Focus – visible outline (keyboard users; never remove for accessibility)
+   ------------------------------------------------------------------------- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-focus-ring, var(--color-secondary));
+  outline-offset: var(--focus-ring-offset, 2px);
+  border-radius: var(--radius-sm);
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline-offset: 0;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-secondary-soft);
+}
+
+/* -------------------------------------------------------------------------
+   Form feedback – error: shake (add .form-shake to form/container)
+   UX: Draws attention without being alarming; one-shot animation.
+   ------------------------------------------------------------------------- */
+@keyframes ux-shake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-6px); }
+  30% { transform: translateX(6px); }
+  45% { transform: translateX(-4px); }
+  60% { transform: translateX(4px); }
+  75% { transform: translateX(-2px); }
+}
+
+.form-shake {
+  animation: ux-shake 0.5s var(--anim-ease) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-shake {
+    animation: none;
+  }
+}
+
+/* Form feedback – success: soft highlight (add .form-success to input/wrapper) */
+@keyframes ux-highlight {
+  0% { box-shadow: 0 0 0 0 var(--color-success); }
+  50% { box-shadow: 0 0 0 6px rgba(0, 123, 64, 0.2); }
+  100% { box-shadow: 0 0 0 0 var(--color-success); }
+}
+
+.form-success.form-control,
+.form-success .form-control,
+.input-highlight-success {
+  border-color: var(--color-success);
+  animation: ux-highlight 0.6s var(--anim-ease) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-success.form-control,
+  .form-success .form-control,
+  .input-highlight-success {
+    animation: none;
+    border-color: var(--color-success);
+  }
+}
+
+/* Notification/alert entrance – slide-in from top (use .ux-notify-in) */
+@keyframes ux-notify-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ux-notify-in {
+  animation: ux-notify-in var(--anim-duration-normal) var(--anim-ease-out) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ux-notify-in {
+    animation: none;
+  }
+}
+
+/* Error state – red border; pair with .form-shake on container for full feedback */
+.form-control.is-invalid,
+.input-with-icon.is-invalid {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 2px rgba(185, 28, 28, 0.15);
+}
+
+/* -------------------------------------------------------------------------
+   Readability – line length and spacing (reduces cognitive load)
+   ------------------------------------------------------------------------- */
+.prose,
+.readable-width {
+  max-width: 65ch;
+  line-height: var(--line-height-relaxed);
+}
+
+.form-group-spaced .mb-3,
+.form-group-spaced .form-group {
+  margin-bottom: var(--space-lg);
+}
+
+/* Links – underline on hover for clarity (optional: add .link-underline to <a>) */
+a.link-underline:hover {
+  text-decoration: underline;
+}
+
+/* -------------------------------------------------------------------------
+   Click/active state – subtle scale (affordance that action registered)
+   ------------------------------------------------------------------------- */
+.btn:active,
+a.btn:active,
+button:active,
+.sidebar-link:active,
+.nav-link:active {
+  transform: scale(0.98);
+  transition: transform var(--transition-fast);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:active,
+  a.btn:active,
+  button:active,
+  .sidebar-link:active,
+  .nav-link:active {
+    transform: none;
+  }
+}
